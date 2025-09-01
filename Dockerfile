@@ -1,5 +1,5 @@
 # Используем легковесный образ с OpenJDK 11
-FROM eclipse-temurin:11.0.23_9-jre-slim
+FROM eclipse-temurin:11.0.24_9-jre-slim
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
