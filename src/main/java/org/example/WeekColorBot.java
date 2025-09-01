@@ -12,9 +12,9 @@ import java.time.temporal.ChronoUnit;
 
 public class WeekColorBot {
     private static final String FIRST_WEEK_COLOR = "синяя";
+    private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(WeekColorBot.class.getName());
 
     public static void main(String[] args) {
-        // Чтение токена из переменной окружения
         String botToken = System.getenv("BOT_TOKEN");
         if (botToken == null || botToken.isEmpty()) {
             System.err.println("Ошибка: переменная окружения BOT_TOKEN не установлена!");
@@ -22,32 +22,28 @@ public class WeekColorBot {
         }
         TelegramBot bot = new TelegramBot(botToken);
 
-        // Получение имени бота
         GetMeResponse getMeResponse = bot.execute(new GetMe());
         String botUsername = getMeResponse.user().username();
         if (botUsername == null) {
             System.err.println("Ошибка: не удалось получить имя бота!");
             System.exit(1);
         }
+        LOGGER.info("Бот запущен с именем: " + botUsername);
 
         bot.setUpdatesListener(updates -> {
             for (Update update : updates) {
-                // Обработка текстовых сообщений
                 if (update.message() != null && update.message().text() != null) {
                     long chatId = update.message().chat().id();
                     String messageText = update.message().text();
 
-                    // Проверка команды /week
-                    if (messageText.equalsIgnoreCase("/week") || messageText.equalsIgnoreCase("/week" + botUsername)) {
+                    if (messageText.equalsIgnoreCase("/week") || messageText.equalsIgnoreCase("/week@" + botUsername)) {
                         String weekColor = getWeekColor();
                         bot.execute(new SendMessage(chatId, "Сегодня " + weekColor + " неделя."));
                     } else {
-                        // Ответ на другие сообщения
                         bot.execute(new SendMessage(chatId, "Отправьте /week, чтобы узнать цвет недели."));
                     }
                 }
 
-                // Обработка добавления бота в чат
                 if (update.message() != null && update.message().newChatMembers() != null) {
                     for (com.pengrad.telegrambot.model.User newMember : update.message().newChatMembers()) {
                         if (newMember.isBot() && newMember.username().equals(botUsername)) {
