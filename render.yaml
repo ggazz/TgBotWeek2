@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: telegram-bot
+    env: java
+    buildCommand: mvn clean package
+    startCommand: java -jar target/telegram-bot-1.0.0-SNAPSHOT-jar-with-dependencies.jar
+    envVars:
+      - key: BOT_TOKEN
+        value: 7994402282:AAH_74yms4dxIpNxkcKZu0bqFYlkfOwH1bM  # Замените на реальный токен или настройте через секреты
+    autoDeploy: true
